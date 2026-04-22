@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Teacher</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  .navbar {
+    background: #1f3c88;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+
+  .logo {
+    font-weight: bold;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+
+  .nav-links a:hover {
+    background: rgba(255,255,255,0.2);
+  }
+</style>
+    <style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+    color: #333;
+  }
+
+  h2 {
+    margin: 0;
+    padding: 20px;
+    background: #1f3c88;
+    color: white;
+    font-weight: 600;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  button {
+    background: #1f3c88;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: #2f5bd3;
+  }
+
+  input, select {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  th {
+    background: #1f3c88;
+    color: white;
+    padding: 10px;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  tr:hover {
+    background: #f1f5ff;
+  }
+
+  .card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+  }
+
+  .btn-danger {
+    background: #d9534f;
+  }
+
+  .btn-danger:hover {
+    background: #c9302c;
+  }
+
+  .btn-success {
+    background: #28a745;
+  }
+
+  .btn-success:hover {
+    background: #218838;
+  }
+
+  .btn-warning {
+    background: #f0ad4e;
+  }
+
+  .btn-warning:hover {
+    background: #ec971f;
+  }
+</style>
+
+</head>
+<body>
+<script>
+  const role = localStorage.getItem("role");
+
+  if (role !== "admin") {
+    alert("Access denied");
+    window.location.href = "home.html";
+  }
+</script>
+
+<div class="navbar">
+  <div class="logo">School Clearance</div>
+
+  <div class="nav-links" id="navLinks">
+    <!-- Always visible -->
+    <a href="index.html">Home</a>
+  </div>
+</div>
+
+<script>
+  const teacher = localStorage.getItem("teacher");
+  const admin = localStorage.getItem("admin");
+
+  const nav = document.getElementById("navLinks");
+
+  if (admin) {
+    nav.innerHTML = `
+      <a href="index.html">Main Page</a>  
+      <a href="registerstudent.html">Register Student</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } else if (teacher) {
+    nav.innerHTML = `
+      <a href="dashboard.html">Dashboard</a>
+      <a href="teacher.html">Teacher Panel</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } else {
+    nav.innerHTML += `
+      <a href="teacherlogin.html">Teacher</a>
+      <a href="adminlogin.html">Admin</a>
+    `;
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+</script>
+
+<h2>Add Teacher</h2>
+
+<input type="text" id="name" placeholder="Teacher Name">
+<input type="password" id="password" placeholder="Password">
+<select id="role">
+  <option value="teacher">teacher</option>
+  <option value="admin">admin</option>
+</select>
+
+<button onclick="addTeacher()">Save</button>
+
+<hr>
+
+<h3>📊 Bulk Upload Teachers (Excel)</h3>
+
+<button onclick="downloadTeacherTemplate()">⬇ Download Template</button>
+
+<br><br>
+
+<input type="file" id="teacherExcel" accept=".xlsx,.xls" />
+
+<br><br>
+
+<button onclick="uploadTeachersExcel()">📤 Upload Excel</button>
+
+<p id="uploadStatus"></p>
+
+<hr>
+
+<h3>Teachers List</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Password</th>
+      <th>Role</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody id="teacherTable"></tbody>
+</table>
+
+
+<script>
+const API = "http://localhost:5000/teachers";
+
+async function addTeacher() {
+  const teachersname = document.getElementById("name").value;
+  const password = document.getElementById("password").value;
+  const role = document.getElementById("role").value || "teacher";
+
+  await fetch(API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      teachersname,
+      password,
+      role
+    })
+  });
+
+  alert("Teacher added!");
+
+  document.getElementById("name").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("role").value = "";
+
+  loadTeachers();
+}
+
+//const API = "http://localhost:5000/teachers";
+
+async function loadTeachers() {
+  const res = await fetch(API);
+  const teachers = await res.json();
+
+  const table = document.getElementById("teacherTable");
+  table.innerHTML = "";
+
+  teachers.forEach(t => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>
+        <input value="${t.teachersname}" id="name-${t._id}">
+      </td>
+
+      <td>
+        <input type="password" value="${t.password}" id="pass-${t._id}">
+        <button onclick="togglePass('${t._id}')">👁</button>
+      </td>
+
+      <td>
+        <input value="${t.role || 'teacher'}" id="role-${t._id}">
+      </td>
+
+      <td>
+        <button onclick="updateTeacher('${t._id}')">Save</button>
+        <button onclick="deleteTeacher('${t._id}')">Delete</button>
+      </td>
+    `;
+
+    table.appendChild(row);
+  });
+}
+
+window.addEventListener("DOMContentLoaded", loadTeachers);
+
+function togglePass(id) {
+  const input = document.getElementById(`pass-${id}`);
+
+  input.type = input.type === "password" ? "text" : "password";
+}
+
+async function updateTeacher(id) {
+  const teachersname = document.getElementById(`name-${id}`).value;
+  const password = document.getElementById(`pass-${id}`).value;
+  const role = document.getElementById(`role-${id}`).value;
+
+  await fetch(`${API}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      teachersname,
+      password,
+      role
+    })
+  });
+
+  alert("Updated!");
+  loadTeachers();
+}
+
+async function deleteTeacher(id) {
+  if (!confirm("Delete this teacher?")) return;
+
+  await fetch(`${API}/${id}`, {
+    method: "DELETE"
+  });
+
+  loadTeachers();
+}
+
+</script>
+
+<script>
+//const API = "http://localhost:5000/teachers";
+
+/* ✅ DOWNLOAD TEMPLATE */
+function downloadTeacherTemplate() {
+  const data = [
+    {
+      teachersname: "Mr. Cruz",
+      password: "1234",
+      role: "teacher"
+    },
+    {
+      teachersname: "Ms. Lee",
+      password: "abcd",
+      role: "teacher"
+    },
+    {
+      teachersname: "ADMIN SAMPLE",
+      password: "admin123",
+      role: "admin"
+    }
+  ];
+
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(wb, ws, "Teachers");
+
+  XLSX.writeFile(wb, "teacher_template.xlsx");
+}
+/* ✅ UPLOAD EXCEL */
+async function uploadTeachersExcel() {
+  const file = document.getElementById("teacherExcel").files[0];
+
+  if (!file) {
+    alert("Please select an Excel file");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = async function (e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+
+    // clean data
+    const teachers = rows
+    .filter(t => t.teachersname && t.password)
+    .map(t => ({
+      teachersname: t.teachersname.trim(),
+      password: t.password,
+      role: t.role?.toLowerCase() || "teacher"
+    }));
+
+  let success = 0;
+
+    document.getElementById("uploadStatus").innerText = "Uploading...";
+
+  for (let t of teachers) {
+  try {
+    await fetch(API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        teachersname: t.teachersname?.trim(),
+        password: t.password,
+        role: t.role || "teacher"   // ✅ DEFAULT ROLE FIX
+      })
+    });
+
+    success++;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+    document.getElementById("uploadStatus").innerText =
+      `Uploaded ${success} teachers successfully`;
+
+    loadTeachers(); // refresh table
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+</script>
+
+
+</body>
+<script src="auth.js"></script>
+</html>

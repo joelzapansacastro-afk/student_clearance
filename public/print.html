@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Print Clearance</title>
+<style>
+  .navbar {
+    background: #1f3c88;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+
+  .logo {
+    font-weight: bold;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+
+  .nav-links a:hover {
+    background: rgba(255,255,255,0.2);
+  }
+</style>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+
+    button {
+      margin-bottom: 20px;
+      padding: 8px 12px;
+    }
+
+    @media print {
+      button { display: none; }
+    }
+
+    
+  </style>
+</head>
+
+<body>
+
+ <div class="navbar">
+  <div class="logo">School Clearance</div>
+
+  <div class="nav-links" id="navLinks">
+    <!-- Always visible -->
+    <a href="index.html">Home</a>
+  </div>
+</div>
+
+<script>
+  const role = localStorage.getItem("role");
+  const nav = document.getElementById("navLinks");
+
+  if (role === "admin") {
+    nav.innerHTML = `
+      <a href="index.html">Main Page</a>  
+      <a href="registerstudent.html">Register Student</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } 
+  else if (role === "teacher") {
+    nav.innerHTML = `
+      <a href="dashboard.html">Dashboard</a>
+      <a href="teacher.html">Teacher Panel</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } 
+  else {
+    nav.innerHTML = `
+      <a href="teacherlogin.html">Teacher Login</a>
+      <a href="adminlogin.html">Admin Login</a>
+    `;
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "home.html";
+  }
+</script>
+
+<h2>Student Clearance Report</h2>
+
+<select id="gradeSelect">
+  <option value="">Select Grade</option>
+  <option>Nursery</option>
+  <option>Pre-Kinder</option>
+  <option>Kinder</option>
+  <option>Grade 1</option>
+  <option>Grade 2</option>
+  <option>Grade 3</option>
+  <option>Grade 4</option>
+  <option>Grade 5</option>
+  <option>Grade 6</option>
+  <option>Grade 7</option>
+  <option>Grade 8</option>
+  <option>Grade 9</option>
+  <option>Grade 10</option>
+  <option>Grade 11</option>
+  <option>Grade 12</option>
+</select>
+
+<button onclick="loadByGrade()">Load</button>
+
+<button onclick="window.print()">Print</button>
+
+<table>
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Teacher</th>
+      <th>Status</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+
+  <div id="printArea"></div>
+</table>
+
+<script src="print.js"></script>
+
+</body>
+<script src="auth.js"></script>
+</html>

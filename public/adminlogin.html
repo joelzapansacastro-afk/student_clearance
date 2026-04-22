@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Login</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    }
+
+    .navbar {
+      background: rgba(0,0,0,0.3);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      color: white;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 10px;
+    }
+
+    .container {
+      height: calc(100vh - 60px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #2c5364;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #203a43;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <div>School Clearance</div>
+
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>Admin Login</h2>
+
+    <input type="text" id="adminUser" placeholder="Username">
+    <input type="password" id="adminPass" placeholder="Password">
+
+    <button onclick="loginAdmin()">Login</button>
+  </div>
+</div>
+
+<script>
+async function loginAdmin() {
+  const teachersname = document.getElementById("adminUser").value.trim();
+  const password = document.getElementById("adminPass").value.trim();
+
+  const res = await fetch("http://localhost:5000/teachers/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ teachersname, password })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Invalid login");
+    return;
+  }
+
+  // SAME SYSTEM AS EVERYTHING ELSE
+  localStorage.setItem("role", data.role);
+  localStorage.setItem("username", data.teachersname);
+
+  window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+<script src="auth.js"></script>
+</html>

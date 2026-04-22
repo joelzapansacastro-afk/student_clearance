@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Status</title>
+<style>
+  .navbar {
+    background: #1f3c88;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+
+  .logo {
+    font-weight: bold;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+
+  .nav-links a:hover {
+    background: rgba(255,255,255,0.2);
+  }
+</style>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+
+    input, button {
+      padding: 8px;
+      margin: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      border: 1px solid #ccc;
+      max-width: 300px;
+    }
+
+    li {
+      padding: 8px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+
+    li:hover {
+      background: #f0f0f0;
+    }
+
+    table {
+      margin-top: 20px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+  </style>
+
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+    color: #333;
+  }
+
+  h2 {
+    margin: 0;
+    padding: 20px;
+    background: #1f3c88;
+    color: white;
+    font-weight: 600;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  button {
+    background: #1f3c88;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: #2f5bd3;
+  }
+
+  input, select {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  th {
+    background: #1f3c88;
+    color: white;
+    padding: 10px;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  tr:hover {
+    background: #f1f5ff;
+  }
+
+  .card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+  }
+
+  .btn-danger {
+    background: #d9534f;
+  }
+
+  .btn-danger:hover {
+    background: #c9302c;
+  }
+
+  .btn-success {
+    background: #28a745;
+  }
+
+  .btn-success:hover {
+    background: #218838;
+  }
+
+  .btn-warning {
+    background: #f0ad4e;
+  }
+
+  .btn-warning:hover {
+    background: #ec971f;
+  }
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="logo">School Clearance</div>
+
+  <div class="nav-links" id="navLinks">
+    <!-- Always visible -->
+    <a href="index.html">Home</a>
+  </div>
+</div>
+
+<script>
+  const role = localStorage.getItem("role");
+  const nav = document.getElementById("navLinks");
+
+  if (role === "admin") {
+    nav.innerHTML = `
+      <a href="index.html">Main Page</a>  
+      <a href="registerstudent.html">Register Student</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } 
+  else if (role === "teacher") {
+    nav.innerHTML = `
+      <a href="dashboard.html">Dashboard</a>
+      <a href="teacher.html">Teacher Panel</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } 
+  else {
+    nav.innerHTML = `
+      <a href="teacherlogin.html">Teacher Login</a>
+      <a href="adminlogin.html">Admin Login</a>
+    `;
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "home.html";
+  }
+</script>
+
+<h2>Student Clearance Status</h2>
+
+<input type="text" id="searchInput" onkeyup="searchStudent()">
+<button onclick="searchStudent()">Search</button>
+
+<ul id="results"></ul>
+
+<h3 id="studentName"></h3>
+<p id="studentGrade"></p>
+<p id="studentStatus"></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Teacher</th>
+      <th>Status</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+  <tbody id="studentData"></tbody>
+</table>
+
+<script src="studentstatus.js"></script>
+
+</body>
+<script src="auth.js"></script>
+</html>

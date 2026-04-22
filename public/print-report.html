@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clearance Certificate</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1f3c88;
+    }
+
+    .search-box {
+      margin: 20px 0;
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    /* 🔥 dropdown */
+    #suggestions {
+      position: absolute;
+      width: 100%;
+      background: white;
+      border: 1px solid #ccc;
+      max-height: 150px;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+
+    #suggestions div {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    #suggestions div:hover {
+      background: #eee;
+    }
+
+    .certificate {
+      margin-top: 20px;
+      border: 2px solid #1f3c88;
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #1f3c88;
+      color: white;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      background: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+
+    /* 🔥 WATERMARK */
+    .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    opacity: 0.08;
+    z-index: 0;
+    pointer-events: none;
+    }
+    /* CERTIFICATE LAYER */
+    .certificate {
+    position: relative;
+    border: 2px solid #1f3c88;
+    padding: 20px;
+    overflow: hidden;
+    }
+
+    .cert-title {
+    text-align: center;
+    font-size: 18px;
+    color: rgb(10, 10, 10);
+    margin-top: 5px;
+    letter-spacing: 1px;
+    }
+
+    /* HEADER */
+    .header {
+    text-align: center;
+    border-bottom: 2px solid #1f3c88;
+    margin-bottom: 15px;
+    }
+
+    .logo {
+    width: 70px;
+    }
+
+    /* 🔥 STAMP */
+    .stamp {
+    position: absolute;
+    top: 120px;
+    right: 30px;
+    transform: rotate(-20deg);
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+    border: 3px solid;
+    }
+
+    .cleared {
+    color: green;
+    border-color: green;
+    }
+
+    .not-cleared {
+    color: red;
+    border-color: red;
+    }
+
+    /* SIGNATURES */
+    .signatures {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;   /* 🔥 center everything */
+    gap: 80px;                 /* space between the two */
+    text-align: center;
+    }
+
+    .signatures div {
+    width: 200px;
+    }
+
+    .line {
+    border-top: 1px solid black;
+    margin-top: 40px;
+    }
+
+    .school-name {
+    color: maroon;
+    }
+
+    /* PRINT CLEAN */
+    @media print {
+    button, #suggestions, input {
+        display: none;
+    }
+    }
+
+    .navbar {
+    background: #1f3c88;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    }
+
+    .logo {
+    font-weight: bold;
+    }
+
+    .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    }
+
+    .nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    }
+
+    .nav-links a:hover {
+    background: rgba(255,255,255,0.2);
+    }    
+
+
+  </style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="logo">School Clearance</div>
+
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a>
+  </div>
+</div>
+
+<script>
+  const nav = document.getElementById("navLinks");
+
+  if (role === "admin") {
+    nav.innerHTML = `
+      <a href="index.html">Main Page</a>
+      <a href="registerstudent.html">Register Student</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } 
+  else if (role === "teacher") {
+    nav.innerHTML = `
+      <a href="dashboard.html">Dashboard</a>
+      <a href="teacher.html">Teacher Panel</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } 
+  else {
+    nav.innerHTML = `
+      <a href="teacherlogin.html">Login</a>
+    `;
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "home.html";
+  }
+</script>
+
+<script>
+  const role = localStorage.getItem("role");
+
+  if (!role) {
+    window.location.href = "teacherlogin.html";
+  }
+
+  if (role !== "admin") {
+    alert("Access denied");
+    window.location.href = "teacher.html";
+  }
+</script>
+
+<div class="container">
+
+  <h1>CLEARANCE CERTIFICATE</h1>
+
+  <div class="search-box">
+    <input 
+      type="text" 
+      id="searchInput" 
+      placeholder="Search student name..."
+      oninput="searchStudent()"
+    >
+    <div id="suggestions"></div>
+  </div>
+
+  <div id="result"></div>
+
+</div>
+
+<script>
+const API = "http://localhost:5000/students";
+
+let studentsData = [];
+
+// 🔹 Load all students once
+async function loadStudents() {
+  const res = await fetch(API);
+  studentsData = await res.json();
+}
+loadStudents();
+
+// 🔹 SEARCH + AUTOCOMPLETE
+function searchStudent() {
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  const suggestions = document.getElementById("suggestions");
+
+  suggestions.innerHTML = "";
+
+  if (input.length < 2) return;
+
+  const matches = studentsData.filter(s =>
+    (s.studentname + " " + s.studentlname)
+      .toLowerCase()
+      .includes(input)
+  );
+
+  matches.slice(0, 5).forEach(student => {
+    const div = document.createElement("div");
+
+    div.textContent = student.studentname + " " + student.studentlname;
+
+    div.onclick = function () {
+      document.getElementById("searchInput").value =
+        student.studentname + " " + student.studentlname;
+
+      suggestions.innerHTML = "";
+
+      showCertificate(student);
+    };
+
+    suggestions.appendChild(div);
+  });
+}
+
+// 🔹 DISPLAY CERTIFICATE
+function showCertificate(student) {
+  const container = document.getElementById("result");
+
+  let rows = "";
+  let allCleared = true;
+
+  (student.subjects || []).forEach(sub => {
+    if (sub.status !== "Cleared") {
+      allCleared = false;
+    }
+
+    rows +=
+      "<tr>" +
+      "<td>" + (sub.subject || "") + "</td>" +
+      "<td>" + (sub.teacher || "") + "</td>" +
+      "<td>" + (sub.status || "Pending") + "</td>" +
+      "<td>" + (sub.comments || "") + "</td>" +
+      "</tr>";
+  });
+
+  // ✅ STATUS STAMP
+  let stamp = "";
+  if (allCleared) {
+    stamp = "<div class='stamp cleared'>OFFICIALLY CLEARED</div>";
+  } else {
+    stamp = "<div class='stamp not-cleared'>NOT CLEARED</div>";
+  }
+
+  container.innerHTML =
+    "<div class='certificate'>" +
+
+    // 🔷 WATERMARK
+    "<img src='images/logo.png' class='watermark'>" +
+
+    // 🔷 HEADER
+    "<div class='header'>" +
+      "<img src='images/logo.png' class='logo'>" +
+      "<h2 class='school-name'>Domuschola International School</h2>" +
+      "<p class='cert-title'><b>CLEARANCE CERTIFICATE</b></p>" +
+    "</div>" +
+
+    stamp +
+
+    "<p><b>Name:</b> " + student.studentname + " " + student.studentlname + "</p>" +
+    "<p><b>Grade:</b> " + student.gradelevel + "</p>" +
+
+    "<table>" +
+    "<tr><th>Subject</th><th>Teacher</th><th>Status</th><th>Comments</th></tr>" +
+    rows +
+    "</table>" +
+
+    // 🔷 SIGNATURES
+    "<div class='signatures'>" +
+      "<div><div class='line'></div><p>Head of Department</p></div>" +
+      "<div><div class='line'></div><p>Head of School</p></div>" +
+    "</div>" +
+
+    "<button onclick='window.print()'>Print / Save as PDF</button>" +
+
+    "</div>";
+}
+
+// 🔹 close dropdown when clicking outside
+document.addEventListener("click", function(e) {
+  if (e.target.id !== "searchInput") {
+    document.getElementById("suggestions").innerHTML = "";
+  }
+});
+</script>
+
+</body>
+</html>

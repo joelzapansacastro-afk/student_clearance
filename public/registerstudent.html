@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register Student</title>
+<style>
+  .navbar {
+    background: #1f3c88;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+
+  .logo {
+    font-weight: bold;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+
+  .nav-links a:hover {
+    background: rgba(255,255,255,0.2);
+  }
+</style>
+  <style>
+    body { font-family: Arial; }
+    input, select { margin: 5px; padding: 5px; }
+    button { margin: 5px; padding: 6px 10px; cursor: pointer; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    
+  </style>
+
+  <style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+    color: #333;
+  }
+
+  h2 {
+    margin: 0;
+    padding: 20px;
+    background: #1f3c88;
+    color: white;
+    font-weight: 600;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  button {
+    background: #1f3c88;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: #2f5bd3;
+  }
+
+  input, select {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  th {
+    background: #1f3c88;
+    color: white;
+    padding: 10px;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  tr:hover {
+    background: #f1f5ff;
+  }
+
+  .card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+  }
+
+  .btn-danger {
+    background: #d9534f;
+  }
+
+  .btn-danger:hover {
+    background: #c9302c;
+  }
+
+  .btn-success {
+    background: #28a745;
+  }
+
+  .btn-success:hover {
+    background: #218838;
+  }
+
+  .btn-warning {
+    background: #f0ad4e;
+  }
+
+  .btn-warning:hover {
+    background: #ec971f;
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+</head>
+
+<body>
+
+  
+<script>
+  const role = localStorage.getItem("role");
+
+  if (!role) {
+    window.location.href = "teacherlogin.html";
+  }
+
+  if (role !== "admin") {
+    alert("Access denied");
+    window.location.href = "teacher.html";
+  }
+</script>
+
+<div class="navbar">
+  <div class="logo">School Clearance</div>
+
+  <div class="nav-links" id="navLinks">
+    <!-- Always visible -->
+    <a href="index.html">Home</a>
+  </div>
+</div>
+
+<script>
+  //const role = localStorage.getItem("role");
+
+  const nav = document.getElementById("navLinks");
+
+  if (role === "admin") {
+    nav.innerHTML = `
+      <a href="index.html">Main Page</a>  
+      <a href="registerstudent.html">Register Student</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } 
+  else if (role === "teacher") {
+    nav.innerHTML = `
+      <a href="dashboard.html">Dashboard</a>
+      <a href="teacher.html">Teacher Panel</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } 
+  else {
+    nav.innerHTML = `
+      <a href="teacherlogin.html">Login</a>
+    `;
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "home.html";
+  }
+</script>
+<h2>Register Student</h2>
+
+<!-- FORM -->
+<input type="hidden" id="studentId">
+
+<input type="text" id="studentno" placeholder="Student No">
+<input type="text" id="studentname" placeholder="First Name">
+<input type="text" id="studentlname" placeholder="Last Name">
+
+<select id="gradelevel">
+  <option value="">Select Grade</option>
+    <option value="Nursery">Nursery</option>
+    <option value="Pre-Kinder">Pre-Kinder</option>
+    <option value="Kinder">Kinder</option>
+    <option value="Grade 1">Grade 1</option>
+    <option value="Grade 2">Grade 2</option>
+    <option value="Grade 3">Grade 3</option>
+    <option value="Grade 4">Grade 4</option>
+    <option value="Grade 5">Grade 5</option>
+    <option value="Grade 6">Grade 6</option>
+    <option value="Grade 7">Grade 7</option>
+    <option value="Grade 8">Grade 8</option>
+    <option value="Grade 9">Grade 9</option>
+    <option value="Grade 10">Grade 10</option>
+    <option value="Grade 11">Grade 11</option>
+    <option value="Grade 12">Grade 12</option>
+</select>
+
+<h4>Subjects & Teachers</h4>
+<div id="subjectsContainer"></div>
+<button onclick="addSubject()">+ Add Subject</button>
+
+<br><br>
+
+<button onclick="saveStudent()">Save</button>
+<button onclick="updateStudent()">Update</button>
+<button onclick="deleteStudent()">Delete</button>
+<button onclick="clearForm()">Clear</button>
+
+<hr>
+
+<h3>📊 Excel Bulk Upload</h3>
+
+<button onclick="downloadTemplate()">⬇ Download Excel Template</button>
+
+<br><br>
+
+<input type="file" id="excelFile" accept=".xlsx,.xls" />
+
+<br><br>
+
+<button onclick="handleExcelUpload()">📤 Upload Excel File</button>
+
+<p id="excelStatus"></p>
+
+<!-- TABLE -->
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Grade</th>
+      <th>Subject</th>
+      <th>Teacher</th>
+    </tr>
+  </thead>
+  <tbody id="studentList"></tbody>
+</table>
+
+<script src="register.js"></script>
+
+</body>
+<script src="auth.js"></script>
+</html>

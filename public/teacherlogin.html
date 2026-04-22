@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teacher Login</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #1f3c88, #2f5bd3);
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(6px);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* CENTER LOGIN */
+    .container {
+      height: calc(100vh - 60px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* CARD */
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      width: 340px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      color: #1f3c88;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #2f5bd3;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #1f3c88;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #2f5bd3;
+    }
+
+    .footer {
+      margin-top: 10px;
+      font-size: 12px;
+      color: gray;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">School Clearance</div>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+
+<!-- LOGIN -->
+<div class="container">
+  <div class="card">
+    <h2>Teacher Login</h2>
+
+    <input type="text" id="name" placeholder="Teacher Name">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <div class="footer">Secure Access Portal</div>
+  </div>
+</div>
+
+<!-- NAV SCRIPT -->
+<script>
+  const teacher = localStorage.getItem("teacher");
+  const admin = localStorage.getItem("admin");
+
+  const nav = document.getElementById("navLinks");
+
+  if (admin) {
+    nav.innerHTML = `
+      <a href="index.html">Main Page</a>  
+      <a href="registerstudent.html">Register Student</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } else if (teacher) {
+    nav.innerHTML = `
+      <a href="dashboard.html">Dashboard</a>
+      <a href="teacher.html">Teacher Panel</a>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  } else {
+    nav.innerHTML += `
+      <a href="teacherlogin.html">Teacher</a>
+      <a href="adminlogin.html">Admin</a>
+    `;
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+</script>
+
+<!-- LOGIN SCRIPT (UNCHANGED) -->
+<script>
+async function login() {
+  const teachersname = document.getElementById("name").value.trim().toUpperCase();
+  const password = document.getElementById("password").value.trim();
+
+  try {
+    const res = await fetch("http://localhost:5000/teachers/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ teachersname, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Login failed");
+      return;
+    }
+
+    // ✅ SAVE ROLE SYSTEM PROPERLY
+    localStorage.setItem("role", data.role);
+    localStorage.setItem("username", data.teachersname);
+
+    // REMOVE OLD SYSTEM
+    localStorage.removeItem("teacher");
+    localStorage.removeItem("admin");
+
+    if (data.role === "admin") {
+      window.location.href = "index.html";
+    } else {
+      window.location.href = "teacher.html";
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Server not reachable");
+  }
+}
+</script>
+
+</body>
+<script src="auth.js"></script>
+</html>
